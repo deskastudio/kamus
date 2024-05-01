@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta property="og:title" content="My Word List" />
+    <meta property="og:description" content="The greatest word list of them all" />
+    <meta property="og:image" content="{{url_for('static', filename='logo_red.png')}}" />
+
+    <link rel="shortcut icon" href="{{url_for('static', filename='favico.ico')}}" type="image/x-icon" />
+    <link rel="icon" href="{{url_for('static', filename='favicon.ico')}}" type="image/x-icon" />
+
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script
+      src="https://code.jquery.com/jquery-3.7.1.js"
+      integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      {% if msg %}
+      alert("{{ msg }}");
+      {% endif %}
+
+      let words = {{ words | tojson }};
+      let word_list = [];
+      for (let i = 0; i < words.length; i++) {
+        word_list.push(words[i].word);
+      }
+
+      function find_word() {
+        let word = $("#input-word").val().toLowerCase().trim();
+        if(!word) {
+          alert('Please enter a word');
+          return;
+        }
+        if (word_list.includes(word)) {
+          let row = $(`#word-${word}`);
+          row.addClass('highlight');
+          row.siblings().removeClass('highlight');
+          row[0].scrollIntoView();
+        } else {
+          window.location.href = `/detail/${word}?sattus_give=new`;
+        }
+      }
+    </script>
+
+    <title>Personal Diary</title>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="banner" onclick="window.location.href='/';"></div>
+
+      <div class="search-box d-flex justify-content-center">
+        <input id="input-word" class="form-control" placeholder="" style="margin-right: 0.5rem;">
+        <button class="btn btn-light" onclick="find_word()">
+          SEARCH
+        </button>
+      </div>
+
+      <table class="table">
+        <thead class="thead-light">
+          <tr>
+            <th scope="col" style="width: 30%;">WORD</th>
+            <th scope="col">MEANING</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-box">
+          {% for word in words %}
+
+            {% set definitions = word.definitions %}
+            {% set word = word.word %}
+          <tr id="word-{{ word }}">
+            <td><a href="/detail/{{ word }}?status_give=old">{{ word }}</a></td>
+            <td>{{ definitions }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="container">
+      <footer class="py-3 my-4">
+        <ul class="nav justify-content-center border-bottom pb-3 mb-3">
+          <li class="nav-item">
+            <a href="/detail/example" class="nav-link px-2 text-muted"
+              >Detail Page</a
+            >
+          </li>
+        </ul>
+        <p class="text-center text-muted">© 2022 Joseph Coi and Co</p>
+      </footer>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+      crossorigin="anonymous"
+    ></script>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+      integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"
+      integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>

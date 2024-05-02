@@ -25,6 +25,8 @@ DB_NAME =  os.environ.get("DB_NAME")
 client = MongoClient(MONGODB_URL)
 db = client[DB_NAME]
 
+app = Flask(__name__)
+
 @app.route('/')
 def main():
     words_result = db.words.find({}, {'_id': False})
